@@ -1,7 +1,9 @@
 package com.melanich.ExchangeRates.service.serviceimplimentation;
 
 import com.melanich.ExchangeRates.client.FeignGifClient;
+import com.melanich.ExchangeRates.model.Data;
 import com.melanich.ExchangeRates.model.Gif;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -23,10 +25,20 @@ class GifServiceImpTest {
     @MockBean
     FeignGifClient gifClient;
 
+    String str;
+    Gif gif;
+    @BeforeEach
+    void init() {
+        str = "https://media2.giphy.com/media/123/giphy.gif";
+        Data data = new Data();
+        data.setEmbed_url("http://giphy.com/embed/123");
+        gif = new Gif();
+        gif.setData(data);
+    }
+
     @Test
-    void getGifNotNull() {
-        Gif gif = new Gif();
+    void getGifTest() {
         Mockito.when(gifClient.getGif(anyString(),anyString())).thenReturn(gif);
-        assertNotNull(gifService.getGif("rich"));
+        assertEquals("https://media2.giphy.com/media/123/giphy.gif",gifService.getUrlGif(1.0));
     }
 }

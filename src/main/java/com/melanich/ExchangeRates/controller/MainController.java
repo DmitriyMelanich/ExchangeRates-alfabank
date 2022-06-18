@@ -1,6 +1,5 @@
 package com.melanich.ExchangeRates.controller;
 
-import com.melanich.ExchangeRates.model.Gif;
 import com.melanich.ExchangeRates.service.serviceinterface.ExchangeRatesService;
 import com.melanich.ExchangeRates.service.serviceinterface.GifService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,34 +39,27 @@ public class MainController {
 
     @GetMapping(value = "/result", produces = MediaType.IMAGE_GIF_VALUE)
     public ResponseEntity<byte[]> getResult() throws IOException, URISyntaxException, InterruptedException {
-        Gif result = null;
         double equalsResult = ratesService.equalsRates();
-        if (equalsResult>=0){
-            result = gifService.getGif(this.rich);
-        } else {
-            result = gifService.getGif(this.broke);
-        }
-
-        String[] arrayStr = result.getData().getEmbed_url().split("/");
-        String gifName = arrayStr[arrayStr.length-1];
-        StringBuilder stringBuilder = new StringBuilder("https://media2.giphy.com/media/")
-                .append(gifName)
-                .append("/giphy.gif");
-        String gifStr = stringBuilder.toString();
+        String urlGif = gifService.getUrlGif(equalsResult);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(gifStr))
+                .uri(URI.create(urlGif))
                 .GET()
                 .build();
-
         HttpResponse<byte[]> response =
-                client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+                null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.IMAGE_GIF)
                 .body(response.body());
     }
-
 }
