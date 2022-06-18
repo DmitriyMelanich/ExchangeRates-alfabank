@@ -45,7 +45,6 @@ class MainControllerTest {
     void getResultTest() throws Exception {
         mockMvc.perform(get("/result"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").value(gif.getData()));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_GIF_VALUE));
     }
 }

@@ -22,7 +22,6 @@ Nice to Have
 # Инструкция по запуску
 
 С использованием Docker:<br>
-docker build -t exrates .  <br>
-docker run -p 8080:8080 exrates
+docker compose up
 
 После старта приложения открываем в браузере страницу по адресу http://localhost:8080/result. Сервис возвращает клиенту JSON объект c адресом GIF картинки в соответствии с техзаданием.
