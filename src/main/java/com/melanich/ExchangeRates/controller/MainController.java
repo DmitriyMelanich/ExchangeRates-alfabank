@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -38,7 +37,7 @@ public class MainController {
     }
 
     @GetMapping(value = "/result", produces = MediaType.IMAGE_GIF_VALUE)
-    public ResponseEntity<byte[]> getResult() throws IOException, URISyntaxException, InterruptedException {
+    public ResponseEntity<byte[]> getResult() throws IOException, InterruptedException {
         double equalsResult = ratesService.equalsRates();
         String urlGif = gifService.getUrlGif(equalsResult);
 
@@ -47,15 +46,7 @@ public class MainController {
                 .uri(URI.create(urlGif))
                 .GET()
                 .build();
-        HttpResponse<byte[]> response =
-                null;
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        var response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
         return ResponseEntity
                 .ok()
